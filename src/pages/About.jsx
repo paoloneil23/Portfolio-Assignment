@@ -1,5 +1,5 @@
 //About jsx file, Paolo Caparas, 301116473, 2025/05/23
-import profilePic from '../assets/profilePic.jpg';
+import profilePic from '../assets/profilepic.jpg';
 import './About.css';
 
 export default function About() {

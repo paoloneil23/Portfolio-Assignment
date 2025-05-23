@@ -1,7 +1,7 @@
 //Home jsx file, Paolo Caparas, 301116473, 2025/05/23
 import './Home.css';
 import { Link } from 'react-router-dom';
-import profilePic from '../assets/profilePic.jpg';
+import profilePic from '../assets/profilepic.jpg';
 
 export default function Home(){
   return (
