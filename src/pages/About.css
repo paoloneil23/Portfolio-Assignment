@@ -1,0 +1,30 @@
+/*About css file, Paolo Caparas, 301116473, 2025/05/23*/
+.about-container {
+  max-width: 700px;
+  margin: 4rem auto;
+  padding: 2rem;
+  text-align: center;
+  background-color: #fff;
+  border-radius: 12px;
+  box-shadow: 0 6px 20px rgba(0, 0, 0, 0.1);
+}
+
+.about-image {
+  width: 180px;
+  height: 180px;
+  border-radius: 12px;
+  object-fit: cover;
+  margin-bottom: 1.5rem;
+  border: 3px solid #61dafb;
+}
+
+.about-name {
+  font-size: 2rem;
+  margin-bottom: 1rem;
+}
+
+.about-description {
+  font-size: 1.1rem;
+  color: #444;
+  line-height: 1.6;
+}
