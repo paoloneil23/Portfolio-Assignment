@@ -1,18 +1,28 @@
 import express from 'express';
+import cors from 'cors';
 import mongoose from 'mongoose';
 import dotenv from 'dotenv';
 import contactRoutes from './server/routes/contactRoutes.js';
 import userRoutes from './server/routes/userRoutes.js';
+import authRoutes from './server/routes/authRoutes.js';
 
 dotenv.config();
 const app = express();
 const PORT = process.env.PORT || 5000;
 
+app.use(cors({
+  origin: 'http://localhost:5173', // frontend origin
+  credentials: true
+}));
+
 app.use(express.json());
 
+// Routes after CORS + JSON middleware
+app.use('/api/auth', authRoutes);
 app.use('/api/contacts', contactRoutes);
 app.use('/api/users', userRoutes);
 
+// MongoDB connection
 mongoose
   .connect(process.env.MONGO_URI, {
     useNewUrlParser: true,

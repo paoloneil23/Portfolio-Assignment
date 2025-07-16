@@ -8,13 +8,18 @@ import {
   deleteAllContacts
 } from '../controllers/contactController.js';
 
+import { requireSignin, requireAdmin } from '../middleware/authMiddleware.js';
+
 const router = express.Router();
 
-router.get('/', getAllContacts);
-router.get('/:id', getContactById);
-router.post('/', createContact);
-router.put('/:id', updateContact);
-router.delete('/:id', deleteContact);
-router.delete('/', deleteAllContacts);
+// Accessible by signed-in users (regular users can view)
+router.get('/', requireSignin, getAllContacts);
+router.get('/:id', requireSignin, getContactById);
+
+// Admin-only operations
+router.post('/', requireSignin, requireAdmin, createContact);
+router.put('/:id', requireSignin, requireAdmin, updateContact);
+router.delete('/:id', requireSignin, requireAdmin, deleteContact);
+router.delete('/', requireSignin, requireAdmin, deleteAllContacts);
 
 export default router;
