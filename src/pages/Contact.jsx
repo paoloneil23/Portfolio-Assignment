@@ -5,8 +5,8 @@ import './Contact.css';
 
 export default function Contact() {
   const [formData, setFormData] = useState({
-    firstName: '',
-    lastName: '',
+    firstname: '',
+    lastname: '',
     phone: '',
     email: '',
     message: ''
@@ -18,11 +18,38 @@ export default function Contact() {
     setFormData({ ...formData, [e.target.name]: e.target.value });
   }
 
-  function handleSubmit(e) {
-    e.preventDefault();
-    console.log('Form submitted:', formData); // For testing
-    navigate('/'); // Redirect to Home
+const handleSubmit = async (e) => {
+  e.preventDefault();
+
+  const { firstname, lastname, email, phone, message } = formData;
+
+  const contactData = {
+    firstname,
+    lastname,
+    email,
+    phone,
+    message
+  };
+
+  const token = "REMOVED";
+
+  try {
+    const response = await fetch('http://localhost:5000/api/contacts', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': `Bearer ${token}`
+      },
+      body: JSON.stringify(contactData)
+    });
+
+    const data = await response.json();
+    console.log('Success:', data);
+    navigate('/');
+  } catch (error) {
+    console.error('Error:', error);
   }
+};
 
   return (
     <div className="contact-container">
@@ -38,17 +65,17 @@ export default function Contact() {
         <div className="form-row">
           <input
             type="text"
-            name="firstName"
+            name="firstname"
             placeholder="First Name"
-            value={formData.firstName}
+            value={formData.firstname}
             onChange={handleChange}
             required
           />
           <input
             type="text"
-            name="lastName"
+            name="lastname"
             placeholder="Last Name"
-            value={formData.lastName}
+            value={formData.lastname}
             onChange={handleChange}
             required
           />
