@@ -2,6 +2,7 @@
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import './Contact.css';
+const token = import.meta.env.VITE_API_TOKEN;
 
 export default function Contact() {
   const [formData, setFormData] = useState({
@@ -31,7 +32,7 @@ const handleSubmit = async (e) => {
     message
   };
 
-  const token = "REMOVED";
+  const token = import.meta.env.VITE_MY_SECRET_TOKEN;
 
   try {
     const response = await fetch('http://localhost:5000/api/contacts', {
@@ -50,6 +51,7 @@ const handleSubmit = async (e) => {
     console.error('Error:', error);
   }
 };
+
 
   return (
     <div className="contact-container">
