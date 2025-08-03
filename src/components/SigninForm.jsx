@@ -25,7 +25,19 @@ export default function SignInForm() {
         body: JSON.stringify(formData)
       });
 
-      const data = await response.json();
+          const text = await response.text();
+    console.log('[Raw Response Text]', text);
+
+    let data;
+    try {
+      data = JSON.parse(text);
+    } catch (parseErr) {
+      throw new Error('Invalid JSON returned from server');
+    }
+
+    if (!response.ok) {
+      throw new Error(data.message || 'Login failed');
+    }
 
       if (!response.ok) {
         throw new Error(data.message || 'Login failed');
