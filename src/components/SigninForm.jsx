@@ -19,21 +19,13 @@ export default function SignInForm() {
       const API = import.meta.env.VITE_API_BASE_URL;
       if (!API) throw new Error('API base URL is not defined');
 
-      const response = await fetch(`${API}/api/auth/signin`, {
+      const response = await fetch(`${API}/api/signin`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(formData)
       });
 
-      const text = await response.text();
-      console.log('Raw response from server:', text);
-
-      let data;
-      try {
-        data = JSON.parse(text);
-      } catch (err) {
-        throw new Error('Response is not valid JSON');
-      }
+      const data = await response.json();
 
     if (!response.ok) {
       throw new Error(data.message || 'Login failed');
