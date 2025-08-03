@@ -32,7 +32,11 @@ export default function Contact() {
     }
 
     try {
-      const response = await fetch('https://portfolio-assignment-ixmu.onrender.com/api/contacts', {
+
+      const API = import.meta.env.VITE_API_BASE_URL;
+      if (!API) throw new Error('API base URL is not defined');
+
+      const response = await fetch(`${API}/api/contacts`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',

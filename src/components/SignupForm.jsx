@@ -21,7 +21,11 @@ const SignupForm = () => {
     setMessage('');
 
     try {
-      const response = await fetch('https://portfolio-assignment-ixmu.onrender.com/api/auth/signup', {
+      
+      const API = import.meta.env.VITE_API_BASE_URL;
+      if (!API) throw new Error('API base URL is not defined');
+
+      const response = await fetch(`${API}/api/signup`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(formData)
