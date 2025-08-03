@@ -1,4 +1,6 @@
+// SignupForm.jsx — Paolo Caparas, 301116473
 import React, { useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 
 const SignupForm = () => {
   const [formData, setFormData] = useState({
@@ -6,21 +8,20 @@ const SignupForm = () => {
     email: '',
     password: ''
   });
-  const [success, setSuccess] = useState('');
-  const [error, setError] = useState('');
+  const [message, setMessage] = useState('');
+  const navigate = useNavigate();
 
-  const handleChange = e => {
+  const handleChange = (e) => {
     const { name, value } = e.target;
     setFormData(prev => ({ ...prev, [name]: value }));
   };
 
-  const handleSubmit = async e => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    setError('');
-    setSuccess('');
+    setMessage('');
 
     try {
-      const response = await fetch('http://localhost:5000/api/users', {
+      const response = await fetch('https://portfolio-assignment-ixmu.onrender.com/api/auth/signup', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(formData)
@@ -29,22 +30,29 @@ const SignupForm = () => {
       const data = await response.json();
 
       if (!response.ok) {
-        setError(data.message || 'Signup failed');
+        setMessage(data.message || 'Signup failed');
         return;
       }
 
-      setSuccess('Signup successful! You can now sign in.');
+      // Optional: store token and redirect immediately
+      localStorage.setItem('token', data.token);
+      localStorage.setItem('user', JSON.stringify(data.user));
+
+      setMessage('Signup successful! Redirecting...');
       setFormData({ name: '', email: '', password: '' });
+
+      setTimeout(() => navigate('/'), 1500); // optional redirect
     } catch (err) {
-      setError('Server error. Please try again later.');
+      console.error(err);
+      setMessage('Server error. Please try again later.');
     }
   };
 
   return (
     <form onSubmit={handleSubmit}>
       <h2>Sign Up</h2>
-      {error && <p style={{ color: 'red' }}>{error}</p>}
-      {success && <p style={{ color: 'green' }}>{success}</p>}
+      {message && <p>{message}</p>}
+
       <input
         type="text"
         name="name"
@@ -52,8 +60,8 @@ const SignupForm = () => {
         value={formData.name}
         onChange={handleChange}
         required
-      />
-      <br />
+      /><br />
+
       <input
         type="email"
         name="email"
@@ -61,8 +69,8 @@ const SignupForm = () => {
         value={formData.email}
         onChange={handleChange}
         required
-      />
-      <br />
+      /><br />
+
       <input
         type="password"
         name="password"
@@ -70,8 +78,8 @@ const SignupForm = () => {
         value={formData.password}
         onChange={handleChange}
         required
-      />
-      <br />
+      /><br />
+
       <button type="submit">Sign Up</button>
     </form>
   );

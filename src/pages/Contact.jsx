@@ -24,17 +24,26 @@ export default function Contact() {
   async function handleSubmit(e) {
     e.preventDefault();
 
+    const token = localStorage.getItem('token'); //Make sure you're storing the JWT on login
+
+    if (!token) {
+      alert('You must be logged in to send a message.');
+      return;
+    }
+
     try {
-      const response = await fetch('http://localhost:5000/api/contacts', {
+      const response = await fetch('https://portfolio-assignment-ixmu.onrender.com/api/contacts', {
         method: 'POST',
         headers: {
-          'Content-Type': 'application/json'
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${token}` //Include token in request
         },
         body: JSON.stringify(formData)
       });
 
       if (!response.ok) {
-        throw new Error('Failed to send contact form');
+        const error = await response.json();
+        throw new Error(error.message || 'Failed to send contact form');
       }
 
       const result = await response.json();

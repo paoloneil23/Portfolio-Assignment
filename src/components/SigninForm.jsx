@@ -1,22 +1,21 @@
-import React, { useState } from 'react';
+// SignInForm.jsx — Paolo Caparas, 301116473
+import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 
-const SigninForm = ({ onLoginSuccess }) => {
+export default function SignInForm() {
   const [formData, setFormData] = useState({ email: '', password: '' });
-  const [error, setError] = useState('');
   const navigate = useNavigate();
 
-  const handleChange = e => {
+  function handleChange(e) {
     const { name, value } = e.target;
-    setFormData(prev => ({ ...prev, [name]: value }));
-  };
+    setFormData((prev) => ({ ...prev, [name]: value }));
+  }
 
-  const handleSubmit = async e => {
+  async function handleSubmit(e) {
     e.preventDefault();
-    setError('');
 
     try {
-      const response = await fetch('http://localhost:5000/api/auth/signin', {
+      const response = await fetch('https://portfolio-assignment-ixmu.onrender.com/api/auth/signin', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(formData)
@@ -25,42 +24,43 @@ const SigninForm = ({ onLoginSuccess }) => {
       const data = await response.json();
 
       if (!response.ok) {
-        setError(data.message || 'Login failed');
-        return;
+        throw new Error(data.message || 'Login failed');
       }
 
-      onLoginSuccess(data.user); // Set user state in App
-      navigate('/'); // Redirect to homepage
+      //Save JWT token to localStorage
+      localStorage.setItem('token', data.token);
+      localStorage.setItem('user', JSON.stringify(data.user)); // optional
+
+      alert('Login successful!');
+      navigate('/'); // Redirect after login
     } catch (err) {
-      setError('Server error. Please try again later.');
+      console.error('Login error:', err);
+      alert('Login failed. Please check your credentials.');
     }
-  };
+  }
 
   return (
-    <form onSubmit={handleSubmit}>
+    <div className="signin-container">
       <h2>Sign In</h2>
-      {error && <p style={{ color: 'red' }}>{error}</p>}
-      <input
-        type="email"
-        name="email"
-        placeholder="Email Address"
-        value={formData.email}
-        onChange={handleChange}
-        required
-      />
-      <br />
-      <input
-        type="password"
-        name="password"
-        placeholder="Password"
-        value={formData.password}
-        onChange={handleChange}
-        required
-      />
-      <br />
-      <button type="submit">Sign In</button>
-    </form>
+      <form onSubmit={handleSubmit}>
+        <input
+          type="email"
+          name="email"
+          placeholder="Email Address"
+          value={formData.email}
+          onChange={handleChange}
+          required
+        />
+        <input
+          type="password"
+          name="password"
+          placeholder="Password"
+          value={formData.password}
+          onChange={handleChange}
+          required
+        />
+        <button type="submit">Sign In</button>
+      </form>
+    </div>
   );
-};
-
-export default SigninForm;
+}
