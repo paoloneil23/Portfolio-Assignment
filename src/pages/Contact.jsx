@@ -1,8 +1,7 @@
-//Contact jsx file, Paolo Caparas, 301116473, 2025/05/23
+// Contact.jsx — Paolo Caparas, 301116473, 2025/05/23
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import './Contact.css';
-const token = import.meta.env.VITE_API_TOKEN;
 
 export default function Contact() {
   const [formData, setFormData] = useState({
@@ -15,43 +14,39 @@ export default function Contact() {
 
   const navigate = useNavigate();
 
+  // Handle form field changes
   function handleChange(e) {
-    setFormData({ ...formData, [e.target.name]: e.target.value });
+    const { name, value } = e.target;
+    setFormData((prevData) => ({ ...prevData, [name]: value }));
   }
 
-const handleSubmit = async (e) => {
-  e.preventDefault();
+  // Handle form submission
+  async function handleSubmit(e) {
+    e.preventDefault();
 
-  const { firstname, lastname, email, phone, message } = formData;
+    try {
+      const response = await fetch('http://localhost:5000/api/contacts', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify(formData)
+      });
 
-  const contactData = {
-    firstname,
-    lastname,
-    email,
-    phone,
-    message
-  };
+      if (!response.ok) {
+        throw new Error('Failed to send contact form');
+      }
 
-  const token = import.meta.env.VITE_MY_SECRET_TOKEN;
+      const result = await response.json();
+      console.log('Success:', result);
 
-  try {
-    const response = await fetch('http://localhost:5000/api/contacts', {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-        'Authorization': `Bearer ${token}`
-      },
-      body: JSON.stringify(contactData)
-    });
-
-    const data = await response.json();
-    console.log('Success:', data);
-    navigate('/');
-  } catch (error) {
-    console.error('Error:', error);
+      // Redirect to homepage or show success
+      navigate('/');
+    } catch (error) {
+      console.error('Error submitting form:', error);
+      alert('Failed to submit. Please try again later.');
+    }
   }
-};
-
 
   return (
     <div className="contact-container">
@@ -82,6 +77,7 @@ const handleSubmit = async (e) => {
             required
           />
         </div>
+
         <input
           type="tel"
           name="phone"
@@ -105,6 +101,7 @@ const handleSubmit = async (e) => {
           onChange={handleChange}
           required
         ></textarea>
+
         <button type="submit">Send Message</button>
       </form>
     </div>
