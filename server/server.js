@@ -21,7 +21,10 @@ const PORT = process.env.PORT || 5000;
 
 //CORS MUST COME FIRST
 app.use(cors({
-  origin: 'http://localhost:5173',
+  origin: [
+    'http://localhost:5173',
+    'https://your-netlify-site.netlify.app'
+  ],
   credentials: true,
   methods: ['GET', 'POST', 'OPTIONS'],
   allowedHeaders: ['Content-Type', 'Authorization']
